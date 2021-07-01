@@ -2,10 +2,34 @@ package main
 
 import (
 	"bufio"
-	"container/list"
 	"os"
 	"strconv"
 )
+
+type Queue struct {
+	items []int
+}
+
+func (q *Queue) Push(value int) {
+	q.items = append(q.items, value)
+}
+
+func (q *Queue) Pop() int {
+	if len(q.items) == 0 {
+		return -1
+	}
+	item, items := q.items[0], q.items[1:]
+	q.items = items
+	return item
+}
+
+func (q *Queue) Empty() bool {
+	if len(q.items) == 0 {
+		return true
+	} else {
+		return false
+	}
+}
 
 var sc *bufio.Scanner
 var wr *bufio.Writer
@@ -47,17 +71,16 @@ func dfs(v int) {
 }
 
 func bfs(v int) {
-	Q := list.New()
-	Q.PushBack(v)
+	Q := Queue{}
+	Q.Push(v)
 	visited[v] = false
-	for Q.Len() != 0 {
-		tmp := Q.Front()
-		Q.Remove(tmp)
-		wr.WriteString(strconv.Itoa(tmp.Value.(int)) + " ")
+	for Q.Empty() != true {
+		tmp := Q.Pop()
+		wr.WriteString(strconv.Itoa(tmp) + " ")
 		for i := 1; i < N+1; i++ {
-			if visited[i] && graph[tmp.Value.(int)][i] {
+			if visited[i] && graph[tmp][i] {
 				visited[i] = false
-				Q.PushBack(i)
+				Q.Push(i)
 			}
 		}
 	}
