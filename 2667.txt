@@ -1,0 +1,74 @@
+package main
+
+import (
+	"bufio"
+	"os"
+	"sort"
+	"strconv"
+	"strings"
+)
+
+var sc *bufio.Scanner
+var wr *bufio.Writer
+var N int
+var visited [25][25]bool
+var arr [25][25]string
+var dx, dy [4]int
+var sum int
+
+func init() {
+	sc = bufio.NewScanner(os.Stdin)
+	sc.Split(bufio.ScanWords)
+	wr = bufio.NewWriter(os.Stdout)
+	dx = [4]int{0, 1, 0, -1}
+	dy = [4]int{1, 0, -1, 0}
+}
+
+func main() {
+	defer wr.Flush()
+	N = scanInt()
+	for i := 0; i < N; i++ {
+		sc.Scan()
+		s := strings.Split(sc.Text(), "")
+		for j := 0; j < N; j++ {
+			arr[i][j] = s[j]
+		}
+	}
+	var sums []int
+	for i := 0; i < N; i++ {
+		for j := 0; j < N; j++ {
+			if !visited[i][j] && arr[i][j] == "1" {
+				sum = 0
+				dfs(i, j)
+				sums = append(sums, sum)
+			}
+		}
+	}
+	sort.Slice(sums, func(i, j int) bool {
+		return sums[i] < sums[j]
+	})
+	wr.WriteString(strconv.Itoa(len(sums)))
+	wr.WriteByte('\n')
+	for i := 0; i < len(sums); i++ {
+		wr.WriteString(strconv.Itoa(sums[i]))
+		wr.WriteByte('\n')
+	}
+}
+
+func dfs(i, j int) {
+	sum++
+	visited[i][j] = true
+	for k := 0; k < 4; k++ {
+		x := i + dx[k]
+		y := j + dy[k]
+		if x >= 0 && x < N && y >= 0 && y < N && !visited[x][y] && arr[x][y] == "1" {
+			dfs(x, y)
+		}
+	}
+}
+
+func scanInt() (n int) {
+	sc.Scan()
+	n, _ = strconv.Atoi(sc.Text())
+	return
+}

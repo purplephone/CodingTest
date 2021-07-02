@@ -9,8 +9,8 @@ import (
 var sc *bufio.Scanner
 var wr *bufio.Writer
 var N, M int
-var visited [1001][1001]bool
-var arr [1001][1001]int
+var visited [101]bool
+var arr [101][101]bool
 var sum int
 
 func init() {
@@ -23,17 +23,23 @@ func main() {
 	defer wr.Flush()
 	N = scanInt()
 	M = scanInt()
-	for i := 0; i < N; i++ {
-		for j := 0; j < M; j++ {
-			arr[i][j] = scanInt()
-		}
+	for i := 0; i < M; i++ {
+		a := scanInt()
+		b := scanInt()
+		arr[a][b], arr[b][a] = true, true
 	}
 	dfs(1)
 	wr.WriteString(strconv.Itoa(sum))
 }
 
 func dfs(index int) {
-
+	visited[index] = true
+	for i := 1; i <= N; i++ {
+		if !visited[i] && arr[index][i] {
+			dfs(i)
+			sum++
+		}
+	}
 }
 
 func scanInt() (n int) {

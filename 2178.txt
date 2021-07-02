@@ -1,0 +1,68 @@
+package main
+
+import (
+	"bufio"
+	"container/list"
+	"os"
+	"strconv"
+	"strings"
+)
+
+var sc *bufio.Scanner
+var wr *bufio.Writer
+var N, M int
+var visited [100][100]bool
+var buf [100][100]int
+var arr [100][100]string
+var dx, dy [4]int
+
+func init() {
+	sc = bufio.NewScanner(os.Stdin)
+	sc.Split(bufio.ScanWords)
+	wr = bufio.NewWriter(os.Stdout)
+	dx = [4]int{0, 1, 0, -1}
+	dy = [4]int{1, 0, -1, 0}
+}
+
+func main() {
+	defer wr.Flush()
+	N = scanInt()
+	M = scanInt()
+	for i := 0; i < N; i++ {
+		sc.Scan()
+		s := strings.Split(sc.Text(), "")
+		for j := 0; j < M; j++ {
+			arr[i][j] = s[j]
+		}
+	}
+	bfs(0, 0)
+	wr.WriteString(strconv.Itoa(buf[N-1][M-1] + 1))
+}
+
+func bfs(i, j int) {
+	q := list.New()
+	q.PushBack(i)
+	q.PushBack(j)
+	for q.Len() != 0 {
+		x := q.Front()
+		q.Remove(x)
+		y := q.Front()
+		q.Remove(y)
+		for k := 0; k < 4; k++ {
+			newX := x.Value.(int) + dx[k]
+			newY := y.Value.(int) + dy[k]
+			if 0 <= newX && 0 <= newY && newX < N && newY < M && arr[newX][newY] == "1" && !visited[newX][newY] && buf[newX][newY] == 0 {
+				buf[newX][newY] = buf[x.Value.(int)][y.Value.(int)] + 1
+				visited[newX][newY] = true
+				q.PushBack(newX)
+				q.PushBack(newY)
+			}
+		}
+	}
+}
+
+func scanInt() (n int) {
+	sc.Scan()
+	n, _ = strconv.Atoi(sc.Text())
+	return
+}
