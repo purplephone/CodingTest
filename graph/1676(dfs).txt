@@ -1,0 +1,57 @@
+package main
+
+import (
+	"bufio"
+	"os"
+	"strconv"
+)
+
+var (
+	sc        *bufio.Scanner
+	wr        *bufio.Writer
+	N, M, min int
+)
+
+func init() {
+	sc = bufio.NewScanner(os.Stdin)
+	sc.Split(bufio.ScanWords)
+	wr = bufio.NewWriter(os.Stdout)
+}
+
+func main() {
+	defer wr.Flush()
+	N = scanInt()
+	M = scanInt()
+	if N > M {
+		wr.WriteString(strconv.Itoa(N - M))
+	} else {
+		wr.WriteString(strconv.Itoa(dfs(N, M)))
+	}
+}
+
+func dfs(n, m int) int {
+	switch {
+	case m == 1:
+		return 1
+	case n >= m:
+		return n - m
+	case m%2 == 1:
+		return Min(dfs(n, m-1), dfs(n, m+1)) + 1
+	default:
+		return Min(dfs(n, m/2)+1, m-n)
+	}
+}
+
+func Min(i, j int) int {
+	if i < j {
+		return i
+	} else {
+		return j
+	}
+}
+
+func scanInt() (n int) {
+	sc.Scan()
+	n, _ = strconv.Atoi(sc.Text())
+	return
+}

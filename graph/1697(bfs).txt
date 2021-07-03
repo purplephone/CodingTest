@@ -1,0 +1,62 @@
+package main
+
+import (
+	"bufio"
+	"os"
+	"strconv"
+)
+
+var (
+	sc        *bufio.Scanner
+	wr        *bufio.Writer
+	N, M, min int
+	time      [100001]int
+	arr       []int
+)
+
+func init() {
+	sc = bufio.NewScanner(os.Stdin)
+	sc.Split(bufio.ScanWords)
+	wr = bufio.NewWriter(os.Stdout)
+}
+
+func main() {
+	defer wr.Flush()
+	N = scanInt()
+	M = scanInt()
+	if N > M {
+		wr.WriteString(strconv.Itoa(N - M))
+	} else {
+		arr = append(arr, N)
+		bfs()
+		wr.WriteString(strconv.Itoa(time[M]))
+	}
+}
+
+func bfs() {
+	for len(arr) > 0 {
+		index := arr[0]
+		arr = arr[1:]
+		if index == M {
+			break
+		}
+		if index-1 >= 0 && time[index-1] == 0 {
+			time[index-1] = time[index] + 1
+			arr = append(arr, index-1)
+		}
+		if index+1 < 100001 && time[index+1] == 0 {
+			time[index+1] = time[index] + 1
+			arr = append(arr, index+1)
+		}
+		if index*2 < 100001 && time[index*2] == 0 {
+			time[index*2] = time[index] + 1
+			arr = append(arr, index*2)
+		}
+	}
+}
+
+func scanInt() (n int) {
+	sc.Scan()
+	n, _ = strconv.Atoi(sc.Text())
+	return
+}
