@@ -7,12 +7,12 @@ import (
 )
 
 var (
-	sc        *bufio.Scanner
-	wr        *bufio.Writer
-	N, M, cnt int
-	arr       [1001][1001]bool
-	visited   []bool
-	dx, dy    [4]int
+	sc            *bufio.Scanner
+	wr            *bufio.Writer
+	N, max, water int
+	arr           [100][100]int
+	visited       [100][100]bool
+	dx, dy        [4]int
 )
 
 func init() {
@@ -26,29 +26,52 @@ func init() {
 func main() {
 	defer wr.Flush()
 	N = scanInt()
-	M = scanInt()
-	visited = make([]bool, N+1)
-	for i := 0; i < M; i++ {
-		u, v := scanInt(), scanInt()
-		arr[u][v] = true
-		arr[v][u] = true
-	}
-	for i := 1; i <= N; i++ {
-		if !visited[i] {
-			visited[i] = true
-			dfs(i)
-			cnt++
+	for i := 0; i < N; i++ {
+		for j := 0; j < N; j++ {
+			arr[i][j] = scanInt()
+			max = Max(max, arr[i][j])
 		}
 	}
-	wr.WriteString(strconv.Itoa(cnt))
+	var result, cnt int
+	for water = 2; water < max; water++ {
+		cnt = 0
+		for i := 0; i < N; i++ {
+			for j := 0; j < N; j++ {
+				if arr[i][j] > water {
+					visited[i][j] = true
+					dfs(i, j)
+					cnt++
+				}
+			}
+		}
+		clear()
+		result = Max(result, cnt)
+	}
+	wr.WriteString(strconv.Itoa(result))
 }
 
-func dfs(index int) {
-	for i := 1; i <= N; i++ {
-		if !visited[i] && arr[index][i] {
-			visited[i] = true
-			dfs(i)
+func dfs(x, y int) {
+	for i := 0; i < 4; i++ {
+		newX := x + dx[i]
+		newY := y + dy[i]
+		if newX >= 0 && newX < N && newY >= 0 && newY < N && arr[newX][newY] > water && !visited[newX][newY] {
+			visited[newX][newY] = true
+			dfs(newX, newY)
 		}
+	}
+}
+func clear() {
+	for i := 0; i < N; i++ {
+		for j := 0; j < N; j++ {
+			visited[i][j] = false
+		}
+	}
+}
+func Max(i, j int) int {
+	if i > j {
+		return i
+	} else {
+		return j
 	}
 }
 

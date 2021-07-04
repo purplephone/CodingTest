@@ -1,0 +1,107 @@
+package main
+
+import (
+	"bufio"
+	"os"
+	"strconv"
+)
+
+var (
+	sc        *bufio.Scanner
+	wr        *bufio.Writer
+	N, M, max int
+	visited   []bool
+	dx, dy    [4]int
+	v         []virus
+)
+
+type virus struct {
+	y, x int
+}
+
+func init() {
+	sc = bufio.NewScanner(os.Stdin)
+	sc.Split(bufio.ScanWords)
+	wr = bufio.NewWriter(os.Stdout)
+	dx = [4]int{0, 0, 1, -1}
+	dy = [4]int{1, -1, 0, 0}
+}
+
+func main() {
+	defer wr.Flush()
+	N = scanInt()
+	M = scanInt()
+	var arr [8][8]int
+	for i := 0; i < N; i++ {
+		for j := 0; j < M; j++ {
+			arr[i][j] = scanInt()
+			if arr[i][j] == 2 {
+				v = append(v, virus{i, j})
+			}
+		}
+	}
+	dfs(0, 0, 0, arr)
+	wr.WriteString(strconv.Itoa(max))
+}
+
+func bfs(arr [8][8]int) {
+	var vi []virus
+	for _, tmp := range v {
+		vi = append(vi, tmp)
+	}
+	for len(vi) > 0 {
+		tmp := vi[0]
+		vi = vi[1:]
+		for i := 0; i < 4; i++ {
+			newY := tmp.y + dy[i]
+			newX := tmp.x + dx[i]
+			if newX >= 0 && newX < M && newY >= 0 && newY < N && arr[newY][newX] == 0 {
+				arr[newY][newX] = 2
+				vi = append(vi, virus{newY, newX})
+			}
+		}
+	}
+	max = Max(max, count(arr))
+}
+
+func dfs(i, j, wall int, arr [8][8]int) {
+	if wall == 3 {
+		bfs(arr)
+		return
+	}
+	for ; i < N; i++ {
+		for ; j < M; j++ {
+			if arr[i][j] == 0 {
+				arr[i][j] = 1
+				dfs(i, j, wall+1, arr)
+				arr[i][j] = 0
+			}
+		}
+		j = 0
+	}
+}
+
+func count(arr [8][8]int) (cnt int) {
+	for i := 0; i < N; i++ {
+		for j := 0; j < M; j++ {
+			if arr[i][j] == 0 {
+				cnt++
+			}
+		}
+	}
+	return
+}
+
+func Max(i, j int) int {
+	if i > j {
+		return i
+	} else {
+		return j
+	}
+}
+
+func scanInt() (n int) {
+	sc.Scan()
+	n, _ = strconv.Atoi(sc.Text())
+	return
+}
