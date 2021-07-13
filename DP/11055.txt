@@ -1,0 +1,60 @@
+package main
+
+import (
+	"bufio"
+	"os"
+	"strconv"
+)
+
+var (
+	sc *bufio.Scanner
+	wr *bufio.Writer
+	N  int
+)
+
+func init() {
+	sc = bufio.NewScanner(os.Stdin)
+	sc.Split(bufio.ScanWords)
+	wr = bufio.NewWriter(os.Stdout)
+}
+
+func main() {
+	defer wr.Flush()
+	N = scanInt()
+	arr := make([]int, N)
+	sum := make([]int, N)
+	for i := 0; i < N; i++ {
+		arr[i] = scanInt()
+	}
+	for i := 0; i < N; i++ {
+		sum[i] = arr[i]
+		for j := 0; j < i; j++ {
+			if arr[i] > arr[j] && sum[i] < sum[j]+arr[i] {
+				sum[i] = sum[j] + arr[i]
+			}
+		}
+	}
+	max := 0
+	for i := 0; i < N; i++ {
+		max = Max(max, sum[i])
+	}
+	wr.WriteString(strconv.Itoa(max))
+}
+
+func Max(i, j int) int {
+	if i > j {
+		return i
+	} else {
+		return j
+	}
+}
+
+func scanInt() (n int) {
+	sc.Scan()
+	n = 0
+	for _, i := range sc.Bytes() {
+		n *= 10
+		n += int(i - '0')
+	}
+	return
+}
