@@ -1,0 +1,69 @@
+package main
+
+import (
+	"bufio"
+	"os"
+	"strconv"
+)
+
+var (
+	sc         *bufio.Scanner
+	wr         *bufio.Writer
+	arr, dp, v [1000]int
+)
+
+func init() {
+	sc = bufio.NewScanner(os.Stdin)
+	sc.Split(bufio.ScanWords)
+	wr = bufio.NewWriter(os.Stdout)
+}
+
+func main() {
+	defer wr.Flush()
+	N := scanInt()
+	for i := 0; i < N; i++ {
+		arr[i] = scanInt()
+	}
+	for i := 0; i < N; i++ {
+		dp[i] = 1
+		v[i] = -1
+		for j := i - 1; j >= 0; j-- {
+			if arr[j] < arr[i] && dp[j]+1 > dp[i] {
+				dp[i] = dp[j] + 1
+				v[i] = j
+			}
+		}
+	}
+	var max, p int
+	for i := 0; i < N; i++ {
+		if max < dp[i] {
+			max = dp[i]
+		}
+	}
+	for i := 0; i < N; i++ {
+		if dp[i] == max {
+			p = i
+		}
+	}
+	wr.WriteString(strconv.Itoa(max) + "\n")
+	dfs(p)
+}
+
+func dfs(in int) {
+	if v[in] == -1 {
+		wr.WriteString(strconv.Itoa(arr[in]) + " ")
+		return
+	}
+	dfs(v[in])
+	wr.WriteString(strconv.Itoa(arr[in]) + " ")
+}
+
+func scanInt() (n int) {
+	sc.Scan()
+	n = 0
+	for _, i := range sc.Bytes() {
+		n *= 10
+		n += int(i - '0')
+	}
+	return
+}
