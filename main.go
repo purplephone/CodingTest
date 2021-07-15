@@ -7,40 +7,33 @@ import (
 )
 
 var (
-	sc     *bufio.Scanner
-	wr     *bufio.Writer
-	divide int
-	arr    [1000000]int
+	sc        *bufio.Scanner
+	wr        *bufio.Writer
+	N, M, max int
+	visited   []bool
+	dx, dy    [4]int
+	v         []virus
 )
+
+type virus struct {
+	y, x int
+}
 
 func init() {
 	sc = bufio.NewScanner(os.Stdin)
 	sc.Split(bufio.ScanWords)
 	wr = bufio.NewWriter(os.Stdout)
-	divide = 1000000009
+	dx = [4]int{0, 0, 1, -1}
+	dy = [4]int{1, -1, 0, 0}
 }
 
 func main() {
 	defer wr.Flush()
-	N := scanInt()
-	arr[0] = 1
-	arr[1] = 2
-	arr[2] = 4
-	for i := 3; i < 1000000; i++ {
-		arr[i] = (arr[i-1] + arr[i-2] + arr[i-3]) % divide
-	}
 
-	for i := 0; i < N; i++ {
-		wr.WriteString(strconv.Itoa(arr[scanInt()-1]) + "\n")
-	}
 }
 
 func scanInt() (n int) {
 	sc.Scan()
-	n = 0
-	for _, i := range sc.Bytes() {
-		n *= 10
-		n += int(i - '0')
-	}
+	n, _ = strconv.Atoi(sc.Text())
 	return
 }
