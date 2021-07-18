@@ -13,7 +13,7 @@ var (
 	visited [1000][1000][2]bool
 	arr     [1000][1000]int
 	dx, dy  [4]int
-	q       []status
+	q, p    []status
 )
 
 func init() {
