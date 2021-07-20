@@ -3,8 +3,6 @@ package main
 import (
 	"bufio"
 	"os"
-	"strconv"
-	"strings"
 )
 
 var (
@@ -13,36 +11,7 @@ var (
 )
 
 type Node struct {
-	data  string
-	left  *Node
-	right *Node
-}
-
-func (n *Node) InOrder() {
-	if n == nil {
-		return
-	}
-	n.left.InOrder()
-	wr.WriteString(n.data)
-	n.right.InOrder()
-}
-
-func (n *Node) PreOrder() {
-	if n == nil {
-		return
-	}
-	wr.WriteString(n.data)
-	n.left.PreOrder()
-	n.right.PreOrder()
-}
-
-func (n *Node) PostOrder() {
-	if n == nil {
-		return
-	}
-	n.left.PostOrder()
-	n.right.PostOrder()
-	wr.WriteString(n.data)
+	data []int
 }
 
 func init() {
@@ -53,34 +22,21 @@ func init() {
 func main() {
 	defer wr.Flush()
 	N := scanInt()
-	treeMap := make(map[string]*Node)
+	treeMap := make(map[int]*Node)
 	for i := 0; i < N; i++ {
-		sc.Scan()
-		str := strings.Split(sc.Text(), " ")
-		if _, empty := treeMap[str[0]]; !empty {
-			treeMap[str[0]] = &Node{data: str[0]}
-		}
-		for _, s := range str[1:] {
-			if _, empty := treeMap[s]; !empty && s != "." {
-				treeMap[s] = &Node{data: s}
-			}
-		}
-		if str[1] != "." {
-			treeMap[str[0]].left = treeMap[str[1]]
-		}
-		if str[2] != "." {
-			treeMap[str[0]].right = treeMap[str[2]]
+		s := scanInt()
+		if _, empty := treeMap[s]; !empty {
+
 		}
 	}
-	treeMap["A"].PreOrder()
-	wr.WriteByte('\n')
-	treeMap["A"].InOrder()
-	wr.WriteByte('\n')
-	treeMap["A"].PostOrder()
 }
 
 func scanInt() (n int) {
 	sc.Scan()
-	n, _ = strconv.Atoi(sc.Text())
+	n = 0
+	for _, i := range sc.Bytes() {
+		n *= 10
+		n += int(i - '0')
+	}
 	return
 }

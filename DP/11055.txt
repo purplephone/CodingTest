@@ -48,13 +48,3 @@ func Max(i, j int) int {
 		return j
 	}
 }
-
-func scanInt() (n int) {
-	sc.Scan()
-	n = 0
-	for _, i := range sc.Bytes() {
-		n *= 10
-		n += int(i - '0')
-	}
-	return
-}
