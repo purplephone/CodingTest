@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"os"
+	"strconv"
 )
 
 var (
@@ -14,8 +15,7 @@ var (
 )
 
 type Node struct {
-	data int
-	left *Node
+	data []int
 }
 
 func init() {
@@ -27,16 +27,33 @@ func init() {
 func main() {
 	defer wr.Flush()
 	N := scanInt()
+	visited = make([]bool, N+1)
+	result = make([]int, N+1)
+	treeMap = make(map[int]*Node)
+	for i := 1; i <= N; i++ {
+		treeMap[i] = &Node{}
+	}
 	for i := 1; i < N; i++ {
-		p, c, d := scanInt(), scanInt(), scanInt()
-		if _, empty := treeMap[p]; !empty {
-			treeMap[p] = &Node{}
-		}
+		s1 := scanInt()
+		s2 := scanInt()
+
+		treeMap[s1].data = append(treeMap[s1].data, s2)
+		treeMap[s2].data = append(treeMap[s2].data, s1)
+	}
+	dfs(1)
+	for i := 2; i <= N; i++ {
+		wr.WriteString(strconv.Itoa(result[i]) + "\n")
 	}
 }
 
 func dfs(index int) {
 	visited[index] = true
+	for _, i := range treeMap[index].data {
+		if !visited[i] {
+			result[i] = index
+			dfs(i)
+		}
+	}
 }
 
 func scanInt() (n int) {
