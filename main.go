@@ -14,8 +14,8 @@ var (
 )
 
 type Node struct {
-	data int
-	left *Node
+	data  int
+	child *Node
 }
 
 func init() {
@@ -32,6 +32,7 @@ func main() {
 		if _, empty := treeMap[p]; !empty {
 			treeMap[p] = &Node{}
 		}
+		treeMap[p].child = append()
 	}
 }
 
