@@ -22,7 +22,10 @@ func init() {
 	sc = bufio.NewScanner(os.Stdin)
 	sc.Split(bufio.ScanWords)
 	wr = bufio.NewWriter(os.Stdout)
+	sick = "headache"
 }
+
+var sick string
 
 func main() {
 	defer wr.Flush()
